@@ -1,6 +1,6 @@
 # Lidar Auto-Braking System
 
-![Demo GIF](media/demo.gif)  
+![Demo GIF](demo.gif)  
 
 A real-time auto-braking system using LiDAR (Light Detection and Ranging) to detect obstacles and automatically apply braking in vehicles. This project can be designed for autonomous vehicles, robotics, or advanced driver-assistance systems (ADAS).
 
