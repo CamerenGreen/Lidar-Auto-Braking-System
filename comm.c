@@ -42,7 +42,6 @@ void auto_brake(int devid)
                         gpio_write(RED_LED, led_state); // Toggle RED LED
                         led_state = !led_state; // Flip the state
                         timer_clear_interrupt_flag(0); // Clear the interrupt flag
-                    }
                 }
                 timer_disable_interrupt(0); // Disable timer interrupt after exiting loop
             }
