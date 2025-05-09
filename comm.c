@@ -33,15 +33,18 @@ void auto_brake(int devid)
                 gpio_write(RED_LED, ON);
                 // gpio_write(BLUE_LED, OFF);
             }else if (dist < 60){
-                // stop completely blink red
-                // gpio_write(GREEN_LED, OFF);
-                delay(50);
-                gpio_write(RED_LED, ON);
-                // gpio_write(BLUE_LED, OFF);
-                delay(50);
-                // gpio_write(RED_LED, OFF);
-                // gpio_write(GREEN_LED, OFF);
-                // gpio_write(BLUE_LED, OFF);
+                // stop completely blink red using timer interrupt
+                timer_setup(0, 100); // Set up timer 0 with 100ms interval
+                timer_enable_interrupt(0); // Enable timer interrupt for timer 0
+                while (dist < 60) {
+                    if (timer_interrupt_flag(0)) { // Check if timer interrupt occurred
+                        static int led_state = 0;
+                        gpio_write(RED_LED, led_state); // Toggle RED LED
+                        led_state = !led_state; // Flip the state
+                        timer_clear_interrupt_flag(0); // Clear the interrupt flag
+                    }
+                }
+                timer_disable_interrupt(0); // Disable timer interrupt after exiting loop
             }
         }
     }
