@@ -52,16 +52,27 @@ void auto_brake(int devid)
 
 int read_from_pi(int devid)
 {
-    char data[8]; 
-    int angle = 0;
-    while (ser_isready(devid) == 0) {
-        ser_readline(devid, 8, data);
-        sscanf(data, "%d", &angle); // reading angle value from the string
-        if (angle < 0) {
-            angle = 0;
+        // Configure UART interrupt for receiving data
+        ser_enable_interrupt(devid);
+
+        // Interrupt handler for UART
+        void uart_interrupt_handler() {
+            char data[8];
+            ser_readline(devid, 8, data);
+            sscanf(data, "%d", &received_angle);
+            if (received_angle < 0) {
+            received_angle = 0;
+            }
         }
-        printf("angle=%d\n", angle);
-        return angle;
+
+        // Attach the interrupt handler
+        ser_attach_interrupt_handler(devid, uart_interrupt_handler);
+
+        // Wait for the angle to be updated by the interrupt
+        while (received_angle == 0);
+
+        // Return the received angle
+        return received_angle;
     }
 }
 
